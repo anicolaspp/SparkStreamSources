@@ -16,3 +16,5 @@ src_managed/
 .scala_dependencies
 .worksheet
 ./idea
+*.xml
+*.iml
