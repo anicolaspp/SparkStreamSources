@@ -8,7 +8,7 @@ import org.apache.spark.unsafe.types.UTF8String
 
 import scala.util.Random
 
-class InMemoryRandomStrings(sqlContext: SQLContext) extends Source {
+class InMemoryRandomStrings private (sqlContext: SQLContext) extends Source {
   private var offset: LongOffset = LongOffset(-1)
 
   private var batches = collection.mutable.ListBuffer.empty[(String, Long)]
@@ -29,8 +29,7 @@ class InMemoryRandomStrings(sqlContext: SQLContext) extends Source {
     val e = LongOffset.convert(end).getOrElse(LongOffset(-1)).offset + 1
 
     println(s"generating batch range $start ; $end")
-
-
+    
     val data = batches
       .par
       .filter { case (_, idx) => idx >= s && idx <= e }
@@ -41,7 +40,6 @@ class InMemoryRandomStrings(sqlContext: SQLContext) extends Source {
       .sparkContext
       .parallelize(data)
       .map { case (v, l) => InternalRow(UTF8String.fromString(v), l.toLong) }
-
 
     sqlContext.sparkSession.internalCreateDataFrame(rdd, schema, isStreaming = true)
   }
@@ -91,9 +89,9 @@ class InMemoryRandomStrings(sqlContext: SQLContext) extends Source {
   }
 }
 
-
 object InMemoryRandomStrings {
 
-  lazy val schema = StructType(List(StructField("value", StringType), StructField("ts", LongType)))
+  def apply(sqlContext: SQLContext): Source = new InMemoryRandomStrings(sqlContext)
 
+  lazy val schema = StructType(List(StructField("value", StringType), StructField("ts", LongType)))
 }

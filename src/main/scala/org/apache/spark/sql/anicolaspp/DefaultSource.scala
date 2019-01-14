@@ -1,11 +1,10 @@
-package com.github.anicolaspp.spark.sql.streaming
+package org.apache.spark.sql.anicolaspp
 
-import org.apache.spark.sql.anicolaspp.{InMemoryRandomStrings, InMemoryRandomStrings}
-import org.apache.spark.sql.{DataFrame, SQLContext}
 import org.apache.spark.sql.execution.streaming.{Sink, Source}
 import org.apache.spark.sql.sources.{DataSourceRegister, StreamSinkProvider, StreamSourceProvider}
 import org.apache.spark.sql.streaming.OutputMode
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.{DataFrame, SQLContext}
 
 class DefaultSource extends StreamSourceProvider with DataSourceRegister with StreamSinkProvider {
 
@@ -23,7 +22,7 @@ class DefaultSource extends StreamSourceProvider with DataSourceRegister with St
                             providerName: String,
                             parameters: Map[String, String]): Source = {
     
-    new InMemoryRandomStrings(sqlContext)
+    InMemoryRandomStrings(sqlContext)
   }
 
   override def shortName(): String = "InMemoryRandomStrings"

@@ -25,7 +25,7 @@ object App {
 
     val r = sparkSession
       .readStream
-      .format("com.github.anicolaspp.spark.sql.streaming.DefaultSource")
+      .format("org.apache.spark.sql.anicolaspp.DefaultSource")
       .schema(s)
       .load()
 
